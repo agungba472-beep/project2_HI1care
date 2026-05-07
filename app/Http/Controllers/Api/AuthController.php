@@ -60,6 +60,27 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Logout: Revoke token Sanctum yang sedang aktif.
+     */
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logout berhasil'
+        ]);
+    }
+
+    /**
+     * Register alias - memanggil registerPasien.
+     */
+    public function register(Request $request)
+    {
+        return $this->registerPasien($request);
+    }
+
     public function registerPasien(Request $request)
     {
         // VALIDASI INPUT

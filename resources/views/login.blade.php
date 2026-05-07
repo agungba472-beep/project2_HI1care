@@ -219,16 +219,12 @@
         }
 
         .input-wrapper i.leading-icon {
-            position: absolute;
-            left: 1rem;
-            color: #94a3b8;
-            font-size: 1rem;
-            transition: color 0.3s;
+            display: none;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            padding: 0.875rem 1rem;
             font-size: 1rem;
             color: var(--brand-bg);
             background-color: var(--bg-light);
@@ -239,7 +235,7 @@
         }
 
         .form-control::placeholder {
-            color: #cbd5e1;
+            color: #94a3b8;
         }
 
         .form-control:hover {
@@ -379,12 +375,11 @@
                     <div class="input-group">
                         <label for="username" class="input-label">Username</label>
                         <div class="input-wrapper">
-                            <i class="fa-solid fa-user leading-icon"></i>
                             <input type="text" 
                                    id="username" 
                                    name="username" 
                                    class="form-control @error('username') is-invalid @enderror" 
-                                   placeholder="Masukkan username" 
+                                   placeholder="&#128100;  Masukkan username" 
                                    value="{{ old('username') }}" 
                                    required 
                                    autofocus
@@ -395,12 +390,11 @@
                     <div class="input-group">
                         <label for="password" class="input-label">Password</label>
                         <div class="input-wrapper">
-                            <i class="fa-solid fa-lock leading-icon"></i>
                             <input type="password" 
                                    id="password" 
                                    name="password" 
                                    class="form-control @error('password') is-invalid @enderror" 
-                                   placeholder="Masukkan password" 
+                                   placeholder="&#128274;  Masukkan password" 
                                    required
                                    style="padding-right: 3rem;"
                                    autocomplete="current-password">
