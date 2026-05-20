@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\AlarmArv;
 use App\Models\DiaryHarian;
+use App\Models\Faskes;
 use App\Models\JadwalNakes;
 use App\Models\Kepatuhan;
 use App\Models\Konsultasi;
@@ -346,6 +347,38 @@ class PatientApiController extends Controller
         ], 201);
     }
 
+    /**
+     * Daftar konsultasi aktif milik pasien (untuk masuk ke chat).
+     */
+    public function getMyConsultations()
+    {
+        $pasien = $this->getPasien();
+        if (!$pasien) {
+            return response()->json(['status' => 'error', 'message' => 'Data pasien tidak ditemukan'], 404);
+        }
+
+        $konsultasi = Konsultasi::where('pasien_id', $pasien->id)
+            ->whereIn('status', ['pending', 'diterima', 'dijadwalkan'])
+            ->with(['nakes.user:id,nama', 'latestChat'])
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($k) {
+                return [
+                    'id'            => $k->id,
+                    'nakes_nama'    => $k->nakes?->user?->nama ?? $k->nakes?->nama ?? 'Nakes',
+                    'nakes_profesi' => $k->nakes?->profesi ?? '-',
+                    'tanggal'       => $k->tanggal,
+                    'waktu'         => $k->waktu,
+                    'status'        => $k->status,
+                    'chat_status'   => $k->chat_status,
+                    'last_message'  => $k->latestChat?->pesan ?? 'Belum ada pesan',
+                    'updated_at'    => $k->updated_at,
+                ];
+            });
+
+        return response()->json(['status' => 'success', 'data' => $konsultasi]);
+    }
+
     // ===================================================================
     // MODUL EDUKASI
     // ===================================================================
@@ -374,5 +407,66 @@ class PatientApiController extends Controller
             ->paginate(15);
 
         return response()->json(['status' => 'success', 'data' => $notifikasi]);
+    }
+
+    // ===================================================================
+    // FASILITAS KESEHATAN
+    // ===================================================================
+
+    /**
+     * Ambil semua fasilitas kesehatan.
+     */
+    public function getFaskes()
+    {
+        $faskes = Faskes::orderBy('nama')->get();
+
+        return response()->json(['status' => 'success', 'data' => $faskes]);
+    }
+
+    // ===================================================================
+    // PENGATURAN ALARM & NADA DERING
+    // ===================================================================
+
+    /**
+     * POST /api/patient/alarms/settings
+     * Simpan pengaturan alarm (waktu, tanggal) + nada dering pilihan pasien.
+     */
+    public function saveAlarmSettings(Request $request)
+    {
+        $request->validate([
+            'waktu'       => 'required|date_format:H:i',
+            'tanggal'     => 'required|date_format:Y-m-d',
+            'nada_dering' => 'required|string|max:100',
+        ]);
+
+        $pasien = $this->getPasien();
+        if (!$pasien) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Data pasien tidak ditemukan'
+            ], 404);
+        }
+
+        // 1. Update nada_dering di tabel pasien
+        $pasien->update([
+            'nada_dering' => $request->nada_dering,
+        ]);
+
+        // 2. Simpan alarm baru di tabel alarm_arv
+        $alarm = AlarmArv::create([
+            'pasien_id' => $pasien->id,
+            'waktu'     => $request->waktu,
+            'tanggal'   => $request->tanggal,
+            'status'    => 'belum',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengaturan alarm dan nada dering berhasil disimpan',
+            'data'    => [
+                'alarm'       => $alarm,
+                'nada_dering' => $pasien->nada_dering,
+            ],
+        ]);
     }
 }

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    protected $fillable = ['pasien_id','nakes_id','sender','pesan'];
+    protected $table = 'chat';
+
+    protected $fillable = ['pasien_id', 'nakes_id', 'konsultasi_id', 'sender', 'pesan'];
 
     public function pasien()
     {
@@ -16,5 +18,10 @@ class Chat extends Model
     public function nakes()
     {
         return $this->belongsTo(Nakes::class);
+    }
+
+    public function konsultasi()
+    {
+        return $this->belongsTo(Konsultasi::class);
     }
 }

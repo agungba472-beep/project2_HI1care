@@ -1,4 +1,4 @@
-@extends('layouts.v_template')
+<!-- @extends('layouts.v_template')
 
 @section('content')
 @include('layouts.partials.admin-styles')
@@ -109,4 +109,4 @@
         </div>
     </div>
 </div>
-@endsection
+@endsection -->

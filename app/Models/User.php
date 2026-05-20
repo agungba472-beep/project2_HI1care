@@ -16,7 +16,8 @@ class User extends Authenticatable
         'username',
         'password',
         'role',
-        'status_akun'
+        'status_akun',
+        'photo',
     ];
 
     protected $hidden = [
@@ -27,6 +28,19 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    protected $appends = ['photo_url'];
+
+    /**
+     * Accessor: URL foto profil lengkap.
+     */
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->photo) {
+            return url('storage/' . $this->photo);
+        }
+        return null;
+    }
 
     // RELASI
     public function pasien()

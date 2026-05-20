@@ -28,20 +28,20 @@ class AdminRefillController extends Controller
         // Filter: Tanggal refill (bulan tertentu)
         if ($request->filled('bulan')) {
             $query->whereMonth('tanggal_refill', Carbon::parse($request->bulan)->month)
-                  ->whereYear('tanggal_refill', Carbon::parse($request->bulan)->year);
+                ->whereYear('tanggal_refill', Carbon::parse($request->bulan)->year);
         }
 
         // Urutkan: yang menunggu di atas, lalu disetujui, terakhir selesai
         $requests = $query->orderByRaw("FIELD(status, 'menunggu', 'disetujui', 'selesai')")
-                          ->orderBy('tanggal_refill', 'asc')
-                          ->get();
+            ->orderBy('tanggal_refill', 'asc')
+            ->get();
 
         // Hitung pasien yang mendekati jadwal refill (H-3)
         $h3Date = Carbon::now()->addDays(3)->toDateString();
         $today = Carbon::now()->toDateString();
         $upcomingCount = RefillObat::where('status', 'menunggu')
-                        ->whereBetween('tanggal_refill', [$today, $h3Date])
-                        ->count();
+            ->whereBetween('tanggal_refill', [$today, $h3Date])
+            ->count();
 
         return view('admin.refill', compact('requests', 'upcomingCount'));
     }
@@ -85,7 +85,7 @@ class AdminRefillController extends Controller
                 'user_id' => $refill->pasien->user_id,
                 'judul' => 'Update Status Refill ARV',
                 'pesan' => $messages[$newStatus],
-                'status' => 'unread'
+                'status' => 'belum_dibaca'
             ]);
         }
 

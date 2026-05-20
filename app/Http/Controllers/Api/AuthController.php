@@ -30,10 +30,12 @@ class AuthController extends Controller
         }
 
         // CEK PASSWORD (Cukup username dan password saja)
-        if (!Auth::attempt([
-            'username' => $request->username,
-            'password' => $request->password
-        ])) {
+        if (
+            !Auth::attempt([
+                'username' => $request->username,
+                'password' => $request->password
+            ])
+        ) {
             return response()->json([
                 'message' => 'Password salah'
             ], 401);
@@ -110,7 +112,7 @@ class AuthController extends Controller
         $user = User::create([
             'nama' => $pasienMaster->nama,
             'username' => $request->username,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
             'role' => 'pasien',
             'status_akun' => 'aktif' // <--- UBAH JADI AKTIF (Karena data master sudah valid)
         ]);
@@ -120,7 +122,7 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'pasien_master_id' => $pasienMaster->id,
             // Jika di tabel pasien ada kolom nakes_id, bisa sekalian dipanggil di sini:
-            // 'nakes_id' => $pasienMaster->nakes_id, 
+            'nakes_id' => $pasienMaster->nakes_id,
             'status_kepatuhan' => 'hijau'
         ]);
 

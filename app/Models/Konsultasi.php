@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Konsultasi extends Model
 {
-    protected $fillable = ['pasien_id','nakes_id','tanggal','waktu','status'];
+    protected $table = 'konsultasi';
+
+    protected $fillable = ['pasien_id', 'nakes_id', 'tanggal', 'waktu', 'status', 'chat_status'];
 
     public function pasien()
     {
@@ -16,5 +18,21 @@ class Konsultasi extends Model
     public function nakes()
     {
         return $this->belongsTo(Nakes::class);
+    }
+
+    /**
+     * Semua pesan chat dalam sesi konsultasi ini.
+     */
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
+
+    /**
+     * Pesan chat terakhir dalam sesi konsultasi.
+     */
+    public function latestChat()
+    {
+        return $this->hasOne(Chat::class)->latestOfMany();
     }
 }

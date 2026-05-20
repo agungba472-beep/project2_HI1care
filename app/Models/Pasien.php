@@ -14,7 +14,8 @@ class Pasien extends Model
     protected $fillable = [
         'user_id',
         'pasien_master_id',
-        'status_kepatuhan'
+        'status_kepatuhan',
+        'nada_dering',
     ];
 
     public function user()

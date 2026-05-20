@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -91,6 +92,34 @@ class ProfileController extends Controller
             'status' => 'success',
             'message' => 'Profil berhasil diperbarui',
             'data' => $user
+        ]);
+    }
+
+    /**
+     * POST /api/profile/photo - Upload foto profil.
+     */
+    public function uploadPhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,jpg,png,webp|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        // Hapus foto lama jika ada
+        if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+            Storage::disk('public')->delete($user->photo);
+        }
+
+        // Simpan foto baru
+        $path = $request->file('photo')->store('photos', 'public');
+
+        $user->update(['photo' => $path]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Foto profil berhasil diperbarui',
+            'photo_url' => $user->photo_url,
         ]);
     }
 }

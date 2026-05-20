@@ -51,7 +51,7 @@
                         <select class="form-select" name="status">
                             <option value="">Semua Status</option>
                             <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>⏳ Menunggu</option>
-                            <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>✅ Disetujui</option>
+                            <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>✅ Sudah Diingatkan</option>
                             <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>✔️ Selesai</option>
                         </select>
                     </div>
@@ -146,7 +146,7 @@
                             @php
                                 $statusBadge = match($refill->status) {
                                     'menunggu' => ['class' => 'hi-badge-warning', 'icon' => 'fa-hourglass-half', 'label' => 'Menunggu'],
-                                    'disetujui' => ['class' => 'hi-badge-info', 'icon' => 'fa-check-circle', 'label' => 'Disetujui'],
+                                    'disetujui' => ['class' => 'hi-badge-info', 'icon' => 'fa-check-circle', 'label' => 'Sudah Diingatkan'],
                                     'selesai' => ['class' => 'hi-badge-success', 'icon' => 'fa-check-double', 'label' => 'Selesai'],
                                     default => ['class' => 'hi-badge-muted', 'icon' => 'fa-question', 'label' => ucfirst($refill->status)],
                                 };
@@ -161,8 +161,8 @@
                                     <form action="{{ route('admin.refill.updateStatus', $refill->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         <input type="hidden" name="status" value="disetujui">
-                                        <button type="submit" class="hi-btn hi-btn-primary hi-btn-sm" onclick="return confirm('Setujui pengajuan refill ini?')">
-                                            <i class="fas fa-check"></i> Setujui
+                                        <button type="submit" class="hi-btn hi-btn-primary hi-btn-sm" onclick="return confirm('Kirim pengingat untuk pengajuan refill ini?')">
+                                            <i class="fas fa-bell"></i> Kirim Pengingat
                                         </button>
                                     </form>
                                 @elseif($refill->status === 'disetujui')

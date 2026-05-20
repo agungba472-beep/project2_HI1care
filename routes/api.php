@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\PatientApiController;
 use App\Http\Controllers\Api\NakesApiController;
+use App\Http\Controllers\Api\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [ProfileController::class, 'index']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/profile/update', [ProfileController::class, 'update']);
+    Route::post('/profile/photo', [ProfileController::class, 'uploadPhoto']);
     Route::get('/profile', [ProfileController::class, 'profile']);
 
     // --- ADMIN API ---
@@ -43,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Alarm & Kepatuhan (FR-P03, FR-P05)
         Route::get('/alarms', [PatientApiController::class, 'getAlarms']);
         Route::post('/alarms', [PatientApiController::class, 'storeAlarm']);
+        Route::post('/alarms/settings', [PatientApiController::class, 'saveAlarmSettings']);
         Route::post('/kepatuhan/track', [PatientApiController::class, 'trackKepatuhan']);
 
         // Diary Harian (FR-P04)
@@ -56,6 +59,9 @@ Route::middleware('auth:sanctum')->group(function () {
         // Booking Konsultasi (FR-P08)
         Route::get('/nakes-schedules', [PatientApiController::class, 'getNakesSchedules']);
         Route::post('/booking', [PatientApiController::class, 'storeBooking']);
+
+        // Konsultasi aktif pasien (untuk masuk ke chat)
+        Route::get('/my-consultations', [PatientApiController::class, 'getMyConsultations']);
     });
 
     // --- FITUR NAKES (MOBILE) ---
@@ -67,9 +73,20 @@ Route::middleware('auth:sanctum')->group(function () {
         // Konsultasi (FR-T03)
         Route::get('/consultations', [NakesApiController::class, 'getConsultations']);
         Route::post('/consultations/{id}/update-status', [NakesApiController::class, 'updateConsultationStatus']);
+
+        // Chat Nakes — Daftar sesi chat aktif
+        Route::get('/active-chats', [ChatController::class, 'getActiveChats']);
+    });
+
+    // --- CHAT API (Shared: Pasien & Nakes) ---
+    Route::prefix('chat')->group(function () {
+        Route::get('/{konsultasiId}/messages', [ChatController::class, 'getMessages']);
+        Route::post('/send', [ChatController::class, 'sendMessage']);
+        Route::post('/{konsultasiId}/takeover', [ChatController::class, 'takeOverChat']);
     });
 
     // --- FITUR UMUM ---
     Route::get('/edukasi', [PatientApiController::class, 'getEdukasi']);           // Modul Edukasi
     Route::get('/notifikasi', [PatientApiController::class, 'getNotifications']); // Notifikasi & Broadcast
+    Route::get('/faskes', [PatientApiController::class, 'getFaskes']);             // Fasilitas Kesehatan
 });
