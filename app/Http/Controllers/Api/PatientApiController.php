@@ -431,6 +431,44 @@ class PatientApiController extends Controller
      * POST /api/patient/alarms/settings
      * Simpan pengaturan alarm (waktu, tanggal) + nada dering pilihan pasien.
      */
+    /**
+     * Tandai alarm spesifik sebagai sudah diminum.
+     */
+    public function markAlarmAsTaken($id)
+    {
+        $pasien = $this->getPasien();
+        if (!$pasien) {
+            return response()->json(['status' => 'error', 'message' => 'Data pasien tidak ditemukan'], 404);
+        }
+
+        $alarm = AlarmArv::where('id', $id)
+            ->where('pasien_id', $pasien->id)
+            ->first();
+
+        if (!$alarm) {
+            return response()->json(['status' => 'error', 'message' => 'Alarm tidak ditemukan'], 404);
+        }
+
+        // Update status alarm
+        $alarm->update(['status' => 'diminum']);
+
+        // Catat juga ke tabel kepatuhan
+        Kepatuhan::create([
+            'pasien_id'   => $pasien->id,
+            'status'      => 'diminum',
+            'last_update' => now(),
+        ]);
+
+        // Update status kepatuhan pasien
+        $this->updateStatusKepatuhan($pasien);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Obat berhasil ditandai sebagai diminum',
+            'data'    => $alarm,
+        ]);
+    }
+
     public function saveAlarmSettings(Request $request)
     {
         $request->validate([

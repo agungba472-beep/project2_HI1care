@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/alarms', [PatientApiController::class, 'getAlarms']);
         Route::post('/alarms', [PatientApiController::class, 'storeAlarm']);
         Route::post('/alarms/settings', [PatientApiController::class, 'saveAlarmSettings']);
+        Route::post('/alarms/{id}/taken', [PatientApiController::class, 'markAlarmAsTaken']);
         Route::post('/kepatuhan/track', [PatientApiController::class, 'trackKepatuhan']);
 
         // Diary Harian (FR-P04)

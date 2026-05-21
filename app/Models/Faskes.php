@@ -17,5 +17,12 @@ class Faskes extends Model
         'kontak',
         'tipe',
         'layanan',
+        'latitude',
+        'longitude',
+    ];
+
+    protected $casts = [
+        'latitude'  => 'float',
+        'longitude' => 'float',
     ];
 }
