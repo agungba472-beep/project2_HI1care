@@ -496,6 +496,7 @@ class PatientApiController extends Controller
             'waktu'     => $request->waktu,
             'tanggal'   => $request->tanggal,
             'status'    => 'belum',
+            'nada_dering' => $request->nada_dering,
         ]);
 
         return response()->json([

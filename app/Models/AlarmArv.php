@@ -8,7 +8,7 @@ class AlarmArv extends Model
 {
     protected $table = 'alarm_arv';
 
-    protected $fillable = ['pasien_id','waktu','status','tanggal'];
+    protected $fillable = ['pasien_id','waktu','status','tanggal','nada_dering'];
 
     public function pasien()
     {
