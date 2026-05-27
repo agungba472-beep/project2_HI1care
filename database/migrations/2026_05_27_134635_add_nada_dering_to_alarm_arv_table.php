@@ -6,18 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::table('alarm_arv', function (Blueprint $table) {
-            // Tambahkan kolom nada_dering
-            $table->string('nada_dering')->nullable()->after('waktu');
-        });
-    }
+    /**
+     * Run the migrations.
+     */
+    public function up()
+{
+    Schema::table('alarm_arv', function (Blueprint $table) {
+        $table->string('nada_dering')->nullable()->default('Default');
+    });
+}
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('alarm_arv', function (Blueprint $table) {
-            $table->dropColumn('nada_dering');
+            //
         });
     }
 };
