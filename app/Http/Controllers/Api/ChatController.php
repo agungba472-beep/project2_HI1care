@@ -9,7 +9,7 @@ use App\Models\Nakes;
 use App\Models\Notifikasi;
 use App\Models\Pasien;
 use Illuminate\Http\Request;
-
+use App\Events\MessageSent;
 class ChatController extends Controller
 {
     // =========================================================================
@@ -182,7 +182,7 @@ class ChatController extends Controller
             'sender'         => $senderType,
             'pesan'          => $request->pesan,
         ]);
-
+        broadcast(new MessageSent($chat))->toOthers();
         $botReply = null;
 
         // Jika chat_status == 'bot' DAN pengirim adalah pasien → auto-reply chatbot
