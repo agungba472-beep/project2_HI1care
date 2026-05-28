@@ -138,4 +138,22 @@ class AdminUserController extends Controller
 
         return redirect()->back()->with('success', 'Data master pasien berhasil dihapus.');
     }
+    public function resetPassword(Request $request, $id)
+{
+    // Validasi input password baru
+    $request->validate([
+        'password' => 'required|min:6|confirmed', // Harus diisi, minimal 6 karakter, dan cocok dengan field confirmation
+    ]);
+
+    // Cari user berdasarkan ID
+    $user = User::findOrFail($id);
+    
+    // Update password baru yang sudah di-hash
+    $user->update([
+        'password' => Hash::make($request->password)
+    ]);
+
+    // Kembalikan ke halaman sebelumnya dengan pesan sukses
+    return redirect()->back()->with('success', 'Password untuk ' . $user->nama . ' berhasil diperbarui!');
+}
 }

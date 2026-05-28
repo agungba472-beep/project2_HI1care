@@ -15,10 +15,6 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-home-alt"></i></div>
                     Dashboard
                 </a>
-                <a class="nav-link {{ Request::is('profile*') ? 'active' : '' }}" href="{{ url('/profile') }}">
-                    <div class="sb-nav-link-icon"><i class="fas fa-user-alt"></i></div>
-                    Profile
-                </a>
 
                 <div class="sb-sidenav-menu-heading">Menu Admin</div>
                 <a class="nav-link {{ Request::routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
@@ -64,4 +60,4 @@
         </div>
 
     </nav>
-</div>
+</div>

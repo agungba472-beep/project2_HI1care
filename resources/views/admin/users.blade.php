@@ -276,11 +276,16 @@
                                 </td>
                                 <td>
                                     @if($n->user)
-                                    <form action="{{ route('admin.users.destroy', $n->user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun nakes {{ $n->nama }}?');" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="hi-btn hi-btn-danger hi-btn-sm" title="Hapus"><i class="fas fa-trash"></i></button>
-                                    </form>
+                                    <div class="d-flex gap-1">
+                                        <button type="button" class="hi-btn hi-btn-warning hi-btn-sm" data-bs-toggle="modal" data-bs-target="#resetPasswordModal{{ $n->user->id }}" title="Reset Password">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <form action="{{ route('admin.users.destroy', $n->user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus akun nakes {{ $n->nama }}?');" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="hi-btn hi-btn-danger hi-btn-sm" title="Hapus"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </div>
                                     @endif
                                 </td>
                             </tr>
@@ -317,6 +322,7 @@
                                 <th>Username</th>
                                 <th>Status Kepatuhan</th>
                                 <th>Tgl Bergabung</th>
+                                <th style="width: 70px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -362,10 +368,17 @@
                                         -
                                     @endif
                                 </td>
+                                <td>
+                                    @if($p->user)
+                                        <button type="button" class="hi-btn hi-btn-warning hi-btn-sm" data-bs-toggle="modal" data-bs-target="#resetPasswordModal{{ $p->user->id }}" title="Reset Password">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6">
+                                <td colspan="7">
                                     <div class="hi-empty">
                                         <i class="fas fa-users"></i>
                                         <p>Belum ada pasien dengan akun aktif.</p>
@@ -457,4 +470,73 @@
         </form>
     </div>
 </div>
+{{-- ==================== MODAL: RESET PASSWORD NAKES ==================== --}}
+@foreach ($nakes as $n)
+    @if($n->user)
+    <div class="modal fade hi-modal" id="resetPasswordModal{{ $n->user->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('admin.users.reset-password', $n->user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-key me-2 text-warning"></i>Reset Password Nakes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 0.9rem;">Reset password untuk akun: <strong class="text-primary">{{ $n->nama }}</strong></p>
+                        <div class="mb-3">
+                            <label class="form-label">Password Baru</label>
+                            <input type="password" name="password" class="form-control" placeholder="Minimal 6 karakter" required minlength="6">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi password baru" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="hi-btn hi-btn-outline" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="hi-btn hi-btn-warning"><i class="fas fa-save"></i> Simpan Password</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+@endforeach
+
+{{-- ==================== MODAL: RESET PASSWORD PASIEN ==================== --}}
+@foreach ($activePatients as $p)
+    @if($p->user)
+    <div class="modal fade hi-modal" id="resetPasswordModal{{ $p->user->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('admin.users.reset-password', $p->user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-key me-2 text-warning"></i>Reset Password Pasien</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-size: 0.9rem;">Reset password untuk akun: <strong class="text-primary">{{ $p->master->nama ?? $p->user->nama }}</strong></p>
+                        <div class="mb-3">
+                            <label class="form-label">Password Baru</label>
+                            <input type="password" name="password" class="form-control" placeholder="Minimal 6 karakter" required minlength="6">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi password baru" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="hi-btn hi-btn-outline" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="hi-btn hi-btn-warning"><i class="fas fa-save"></i> Simpan Password</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+@endforeach
 @endsection

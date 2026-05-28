@@ -50,7 +50,6 @@
                     <i class="fas fa-user fa-fw"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
                     <li><hr class="dropdown-divider" /></li>
                     <li>
                         <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('topnav-logout-form').submit();">

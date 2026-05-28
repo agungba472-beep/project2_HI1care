@@ -34,6 +34,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/master/store', [AdminUserController::class, 'storeMaster'])->name('master.store');
     Route::delete('/master/{id}', [AdminUserController::class, 'destroyMaster'])->name('master.destroy');
     Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::put('/users/{id}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.reset-password');
     Route::get('/pasien', [AdminPasienController::class, 'index'])->name('pasien.index');
     Route::post('/pasien/store', [AdminPasienController::class, 'store'])->name('pasien.store');
     Route::get('/refill', [AdminRefillController::class, 'index'])->name('refill.index');

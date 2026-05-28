@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\PatientApiController;
 use App\Http\Controllers\Api\NakesApiController;
 use App\Http\Controllers\Api\ChatController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -77,8 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/consultations/{id}/respond', [NakesApiController::class, 'respondConsultation']);
         
         // Live Chat
-        Route::get('/chats/active', [NakesApiController::class, 'getActiveChats']);
-        
+       Route::get('/nakes/active-chats', [ChatController::class, 'getActiveChats']);
         // Monitoring Pasien
         Route::get('/patients', [NakesApiController::class, 'getMyPatients']);
         Route::get('/patients/{id}', [NakesApiController::class, 'getPatientDetail']);
